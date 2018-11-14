@@ -361,8 +361,7 @@ class Vector{
 		return Constiterator(values + sz, this);
 	}
 
-	iterator erase(const_iterator pos)
-	{
+	iterator erase(const_iterator pos){
 		auto diff = pos - begin();
 		if (diff < 0 || static_cast<size_type>(diff) >= sz)
 			throw runtime_error("Iterator out of bounds");
@@ -392,8 +391,7 @@ class Vector{
 		return iterator{values + current, this};
 	}
 
-	ostream &print(ostream &o) const
-	{
+	ostream &print(ostream &o) const{
 		o << "[";
 		for (size_t i = 0; i < sz; i++)
 			if (i == sz - 1){
