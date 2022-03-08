@@ -23,12 +23,12 @@ private:
 	size_t max_sz;
 	size_t sz;
 	static size_t constexpr min_sz = 5;
-	value_type *values;
+	T *values;
 
 	// increasing of capacity
 	void reserve(size_t new_len)
 	{
-		value_type *new_array = new value_type[new_len];
+		T *new_array = new T[new_len];
 		for (size_t i{0}; i < sz; i++)
 			new_array[i] = values[i];
 
@@ -48,12 +48,12 @@ public:
 			max_sz = min_sz;
 
 		sz = 0;
-		values = new value_type[max_sz];
+		values = new T[max_sz];
 	}
 
-	Vector(initializer_list<value_type> il)
+	Vector(initializer_list<T> il)
 	{
-		values = il.size() > 0 ? new value_type[il.size()] : nullptr;
+		values = il.size() > 0 ? new T[il.size()] : nullptr;
 		max_sz = il.size();
 		sz = 0;
 		for (const auto &elem : il)
@@ -64,7 +64,7 @@ public:
 	Vector(const Vector &right)
 	{
 		size_t i = 0;
-		values = new value_type[right.max_sz];
+		values = new T[right.max_sz];
 		for (i = 0; i < right.sz; i++)
 		{
 			this->values[i] = right.values[i];
@@ -111,7 +111,7 @@ public:
 	}
 
 	// Adds one element to the end of vector
-	void push_back(value_type value)
+	void push_back(T value)
 	{
 		if (sz == max_sz)
 			reserve(max_sz * 2 + 5);
@@ -130,7 +130,7 @@ public:
 	void shrink_to_fit()
 	{
 		max_sz = sz;
-		value_type *new_values = new value_type[max_sz];
+		T *new_values = new T[max_sz];
 		for (size_t i = 0; i < sz; i++)
 			new_values[i] = values[i];
 		delete[] values;
@@ -148,13 +148,13 @@ public:
 	}
 
 	// overloading of operator =
-	Vector<value_type> &operator=(const Vector &src)
+	Vector<T> &operator=(const Vector &src)
 	{
 		if (this == &src)
 			return *this;
 		delete[] this->values;
 		size_t i = 0;
-		this->values = new value_type[src.max_sz];
+		this->values = new T[src.max_sz];
 		for (i = 0; i < src.sz; i++)
 		{
 			this->values[i] = src.values[i];

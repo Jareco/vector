@@ -22,5 +22,14 @@ int main(){
     Vector<double> v2;
     v2.push_back(5.3);
     cout << v2 << endl;
+
+    cout << "Test 3" << endl;
+    Vector<double> v3;
+    v3.push_back(2.32);
+    v3.push_back(233);
+    v3.push_back(32.3);
+
+    for (const auto el: v3)
+        cout << el << endl;
     return 0;
 }
