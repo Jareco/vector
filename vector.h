@@ -4,8 +4,9 @@
 using namespace std;
 
 template <typename T>
-class Vector{
-  public:
+class Vector
+{
+public:
 	class Constiterator;
 	class Iterator;
 	using value_type = T;
@@ -18,18 +19,16 @@ class Vector{
 	using iterator = Iterator;
 	using const_iterator = Constiterator;
 
-  private:
+private:
 	size_t max_sz;
 	size_t sz;
-	T *values;
-	mutable int anz;
+	static size_t constexpr min_sz = 5;
+	value_type *values;
 
-	//increasing of capacity
-	void reserve(size_t new_len){
-		if (new_len < max_sz)
-			throw runtime_error("Falsch");
-
-		T *new_array = new T[new_len];
+	// increasing of capacity
+	void reserve(size_t new_len)
+	{
+		value_type *new_array = new value_type[new_len];
 		for (size_t i{0}; i < sz; i++)
 			new_array[i] = values[i];
 
@@ -38,50 +37,44 @@ class Vector{
 		this->max_sz = new_len;
 	}
 
-  public:
-	Vector() : max_sz{0},
-			   sz{0}, anz{0}, values{nullptr}
+public:
+	Vector() : Vector(min_sz)
 	{
 	}
 
-	Vector(size_t max_sz) : max_sz{max_sz},
-							sz{0}, anz{0}, values{max_sz > 0 ? new T[max_sz] : nullptr}
+	Vector(size_t max_sz) : max_sz{max_sz}
 	{
+		if (max_sz < min_sz)
+			max_sz = min_sz;
+
+		sz = 0;
+		values = new value_type[max_sz];
 	}
 
-	/**  Second Constructor
-	Vector:: Vector (size_t max_sz) {
-	this->max_sz=max_sz;
-	this->sz=0;
-	if(max_sz>0)
-	    values = new T[max_sz];
-	else
-	    values= nullptr;
-	
-	}
-	**/
-
-	Vector(initializer_list<T> il){
-		values = il.size() > 0 ? new T[il.size()] : nullptr;
+	Vector(initializer_list<value_type> il)
+	{
+		values = il.size() > 0 ? new value_type[il.size()] : nullptr;
 		max_sz = il.size();
 		sz = 0;
-		anz = 0;
 		for (const auto &elem : il)
 			values[sz++] = elem;
 	}
 
-	//Copy contructor
-	Vector(const Vector &right){
+	// Copy contructor
+	Vector(const Vector &right)
+	{
 		size_t i = 0;
-		values = new T[right.max_sz];
-		for (i = 0; i < right.sz; i++){
+		values = new value_type[right.max_sz];
+		for (i = 0; i < right.sz; i++)
+		{
 			this->values[i] = right.values[i];
 		}
 		sz = i;
 		this->max_sz = right.max_sz;
 	}
 
-	Vector(Vector &&src){
+	Vector(Vector &&src)
+	{
 		values = src.values;
 		sz = src.sz;
 		max_sz = src.max_sz;
@@ -89,113 +82,64 @@ class Vector{
 		src.sz = src.max_sz = 0;
 	}
 
-	//Destructor
-	~Vector(){
+	// Destructor
+	~Vector()
+	{
 		delete[] values;
 	}
 
-	//returns the size of the vector
-	size_t size() const{
+	// returns the size of the vector
+	size_t size() const
+	{
 		return sz;
 	}
 
-	//checks if the vector is empty
-	bool empty(){
-		if (sz == 0)
-			return true;
-		else
-			return false;
+	// checks if the vector is empty
+	bool empty()
+	{
+		return sz == 0;
 	}
 
-	void clear(){
+	void clear()
+	{
 		sz = 0;
 	}
 
-	//decreasing of capacity
-	void shrink_to_fit(size_t new_size){
-		try{
-			if (new_size >= 0 && new_size < max_sz){
+	// Adds one element to the end of vector
+	void push_back(value_type value)
+	{
+		if (sz == max_sz)
+			reserve(max_sz * 2 + 5);
 
-				max_sz = new_size;
-			}
-			else{
-				throw runtime_error("Nicht passende Groesse");
-			}
-
-			if (sz > new_size)
-				sz = new_size;
-
-			T *new_array = new T[max_sz];
-			for (size_t i = 0; i < sz; i++){
-				new_array[i] = values[i];
-			}
-			delete[] values;
-			values = new_array;
-		}
-		catch (...){
-			cout << "Nicht passende Groesse" << endl;
-		}
+		values[sz] = value;
+		sz++;
 	}
 
-	//Adds one element to the end of vector
-	void push_back(T wert){
-		if (sz == max_sz){
-			if (max_sz > 0){
-				reserve(max_sz * 2);
-			}
-			else{
-				max_sz = 2;
-				reserve(max_sz * 2);
-			}
-		}
-		values[sz] = wert;
-		sz = sz + 1;
-	}
-
-	//delete one lement
-	void pop_back(){
+	// delete one lement
+	void pop_back()
+	{
 		if (sz > 0)
-			sz = sz - 1;
+			sz--;
 	}
 
-	T &operator[](size_t index){
-		if (sz == 0)
-			throw runtime_error("Empty vector");
-		if (index > sz - 1)
-			throw runtime_error("Empty vector");
-		if (index % 2 == 0)
-			anz++;
+	T &operator[](size_t index)
+	{
 		return values[index];
 	}
 
-	const T &operator[](size_t index) const{
-		if (sz == 0)
-			throw runtime_error("Empty vector");
-		if (index > sz - 1)
-			throw runtime_error("Empty vector");
-		anz--;
+	const T &operator[](size_t index) const
+	{
 		return values[index];
 	}
 
-	int count(){
-		if (anz > 3 || anz < (-3))
-			throw runtime_error("counter! normal");
-		return anz;
-	}
-
-	int count() const{
-		if (anz > 3 || anz < (-3))
-			throw runtime_error("counter! const");
-		return anz;
-	}
-
-	//overloading of operator =
-	Vector<T> &operator=(const Vector &src){
+	// overloading of operator =
+	Vector<value_type> &operator=(const Vector &src)
+	{
 		if (this == &src)
 			return *this;
 		delete[] this->values;
 		size_t i = 0;
-		this->values = new T[src.max_sz];
+		this->values = new value_type[src.max_sz];
 		for (i = 0; i < src.sz; i++)
 		{
 			this->values[i] = src.values[i];
@@ -204,7 +148,8 @@ class Vector{
 		this->max_sz = src.max_sz;
 		return *this;
 	}
-	Vector &operator=(Vector &&rhs){
+	Vector &operator=(Vector &&rhs)
+	{
 		delete[] values;
 		values = rhs.values;
 		sz = rhs.sz;
@@ -213,155 +158,178 @@ class Vector{
 		rhs.sz = rhs.max_sz = 0;
 	}
 
-	class Iterator{
+	class Iterator
+	{
 		T *ptr;
 		Vector<T> *v;
 
-	  public:
-		using value_type = Vector :: value_type;
+	public:
+		using value_type = Vector ::value_type;
 		using difference_type = Vector::difference_type;
 		using reference = Vector::reference;
 		using pointer = Vector::pointer;
 		using iterator_category = std::forward_iterator_tag;
 
-		Iterator(T *new_iterator, Vector *new_vector){
+		Iterator(T *new_iterator, Vector *new_vector)
+		{
 			this->ptr = new_iterator;
 			this->v = new_vector;
 		}
 
-		const Iterator &operator++(){
+		const Iterator &operator++()
+		{
 			if (ptr >= ((*v).end()).ptr)
 				throw runtime_error("Out of bounds");
 			this->ptr = this->ptr + 1;
 			return *this;
 		}
 
-		bool operator!=(const Iterator &src) const{
+		bool operator!=(const Iterator &src) const
+		{
 			if (this->ptr == src.ptr)
 				return false;
 			else
 				return true;
 		}
 
-		T &operator*(){
+		T &operator*()
+		{
 			if (ptr >= ((*v).end()).ptr)
 				throw runtime_error("Out of bounds");
 			return *ptr;
 		}
 
-		const T &operator*() const{
+		const T &operator*() const
+		{
 			if (ptr >= ((*v).end()).ptr)
 				throw runtime_error("Out of bounds");
 			return *ptr;
 		}
 
-		bool operator==(const Iterator &src) const{
+		bool operator==(const Iterator &src) const
+		{
 			if (this->ptr == src.ptr)
 				return true;
 			else
 				return false;
 		}
 
-		Iterator operator++(int){
-			Iterator old{
-				*this};
+		Iterator operator++(int)
+		{
+			Iterator old{*this};
 			++*this;
 			return old;
 		}
 
-		const T *operator->(){
+		const T *operator->()
+		{
 			return ptr;
 		}
 
-		operator Constiterator(){
+		operator Constiterator()
+		{
 			return Constiterator(ptr, v);
 		}
 	};
 
-	class Constiterator{
+	class Constiterator
+	{
 		T *ptr;
 		const Vector<T> *v;
 
-	  public:
-		using value_type = Vector :: value_type;
+	public:
+		using value_type = Vector ::value_type;
 		using difference_type = Vector::difference_type;
 		using reference = Vector::reference;
 		using pointer = Vector::pointer;
 		using iterator_category = std::forward_iterator_tag;
 
-		Constiterator(T *new_iterator, const Vector *new_vector){
+		Constiterator(T *new_iterator, const Vector *new_vector)
+		{
 			this->ptr = new_iterator;
 			this->v = new_vector;
 		}
 
-		Constiterator &operator++(){
+		Constiterator &operator++()
+		{
 			if (ptr >= ((*v).end()).ptr)
 				throw runtime_error("Out of bounds");
 			this->ptr = this->ptr + 1;
-			//aufg1:	ptr - 1
+			// aufg1:	ptr - 1
 			return *this;
 		}
 
-		bool operator!=(const Constiterator &src) const{
+		bool operator!=(const Constiterator &src) const
+		{
 			if (this->ptr == src.ptr)
 				return false;
 			else
 				return true;
 		}
 
-		const T &operator*() const{
+		const T &operator*() const
+		{
 			if (ptr >= ((*v).end()).ptr)
 				throw runtime_error("Out of bounds");
 			return *ptr;
 		}
 
-		const T &operator*(){
+		const T &operator*()
+		{
 			if (ptr >= ((*v).end()).ptr)
 				throw runtime_error("Out of bounds");
 			return *ptr;
 		}
 
-		bool operator==(const Constiterator &src) const{
+		bool operator==(const Constiterator &src) const
+		{
 			if (this->ptr == src.ptr)
 				return true;
 			else
 				return false;
 		}
 
-		Constiterator operator++(int){
+		Constiterator operator++(int)
+		{
 			Constiterator old{*this};
 			++*this;
 			return old;
 		}
 
-		const T *operator->(){
+		const T *operator->()
+		{
 			return ptr;
 		}
 
 		friend difference_type operator-(const Vector::Constiterator &lop,
-										 const Vector::Constiterator &rop){
+										 const Vector::Constiterator &rop)
+		{
 			return lop.ptr - rop.ptr;
 		}
 	};
 
-	
-	Iterator begin(){
+	Iterator begin()
+	{
 		return Iterator(values, this);
 	}
 
-	Iterator end(){
+	Iterator end()
+	{
 		return Iterator(values + sz, this);
 	}
 
-	Constiterator begin() const{
+	Constiterator begin() const
+	{
 		return Constiterator(values, this);
 	}
 
-	Constiterator end() const{
+	Constiterator end() const
+	{
 		return Constiterator(values + sz, this);
 	}
 
-	iterator erase(const_iterator pos){
+	iterator erase(const_iterator pos)
+	{
 		auto diff = pos - begin();
 		if (diff < 0 || static_cast<size_type>(diff) >= sz)
 			throw runtime_error("Iterator out of bounds");
@@ -374,9 +342,9 @@ class Vector{
 			values + current, this};
 	}
 
-	
 	iterator insert(const_iterator pos,
-					Vector<T>::const_reference val){
+					Vector<T>::const_reference val)
+	{
 		auto diff = pos - begin();
 		if (diff < 0 || static_cast<size_type>(diff) > sz)
 			throw runtime_error("Iterator out of bounds");
@@ -391,13 +359,16 @@ class Vector{
 		return iterator{values + current, this};
 	}
 
-	ostream &print(ostream &o) const{
+	ostream &print(ostream &o) const
+	{
 		o << "[";
 		for (size_t i = 0; i < sz; i++)
-			if (i == sz - 1){
+			if (i == sz - 1)
+			{
 				o << values[i];
 			}
-			else{
+			else
+			{
 				o << values[i] << ",";
 			}
 		o << "]";
@@ -407,6 +378,7 @@ class Vector{
 };
 
 template <typename T>
-ostream &operator<<(ostream &o, const Vector<T> &t){
+ostream &operator<<(ostream &o, const Vector<T> &t)
+{
 	return t.print(o);
 }
