@@ -186,10 +186,7 @@ public:
 
 		bool operator!=(const Iterator &src) const
 		{
-			if (this->ptr == src.ptr)
-				return false;
-			else
-				return true;
+			return !(this->ptr == src.ptr);
 		}
 
 		T &operator*()
@@ -208,10 +205,7 @@ public:
 
 		bool operator==(const Iterator &src) const
 		{
-			if (this->ptr == src.ptr)
-				return true;
-			else
-				return false;
+			return this->ptr == src.ptr;
 		}
 
 		Iterator operator++(int)
@@ -261,10 +255,7 @@ public:
 
 		bool operator!=(const Constiterator &src) const
 		{
-			if (this->ptr == src.ptr)
-				return false;
-			else
-				return true;
+			return !(this->ptr == src.ptr);
 		}
 
 		const T &operator*() const
@@ -283,10 +274,7 @@ public:
 
 		bool operator==(const Constiterator &src) const
 		{
-			if (this->ptr == src.ptr)
-				return true;
-			else
-				return false;
+			return this->ptr == src.ptr;
 		}
 
 		Constiterator operator++(int)

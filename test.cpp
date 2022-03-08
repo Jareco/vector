@@ -8,13 +8,11 @@ int main(){
     cout << "Test 1 " << endl;
     Vector<double> v1({});
     v1.push_back(43.4);
-    for(double el: v1){
-        cout << el << endl;
-    }
+    cout << v1 << endl;
 
     cout << "Test 2 " << endl;
     Vector<double> v2;
     v2.push_back(5.3);
-    cout << v2[0] << endl;
+    cout << v2 << endl;
     return 0;
 }
