@@ -94,6 +94,11 @@ public:
 		return sz;
 	}
 
+	size_t capacity() const
+	{
+		return max_sz;
+	}
+
 	// checks if the vector is empty
 	bool empty()
 	{
@@ -120,6 +125,16 @@ public:
 	{
 		if (sz > 0)
 			sz--;
+	}
+
+	void shrink_to_fit()
+	{
+		max_sz = sz;
+		value_type *new_values = new value_type[max_sz];
+		for (size_t i = 0; i < sz; i++)
+			new_values[i] = values[i];
+		delete[] values;
+		values = new_values;
 	}
 
 	T &operator[](size_t index)

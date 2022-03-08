@@ -6,8 +6,16 @@ int main(){
     cout << "Test program for vector" << endl;
 
     cout << "Test 1 " << endl;
-    Vector<double> v1({});
+    Vector<double> v1(25);
+    cout << v1.capacity() << endl;
     v1.push_back(43.4);
+    cout << v1 << endl;
+    v1.shrink_to_fit();
+    cout << v1.capacity() << endl;
+    cout << v1 << endl;
+    v1.push_back(23);
+    cout << v1 << endl;
+    v1.pop_back();
     cout << v1 << endl;
 
     cout << "Test 2 " << endl;
